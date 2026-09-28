@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCHOOL ASSESSMENT TOOL</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+/* ============ THEME ============ */
+:root{
+  --navy:#081a38; --navy2:#0d2b5c; --navy3:#123a7a; --line:#1c3f7d;
+  --accent:#2f6fed; --accent2:#1e4fa3; --txt:#e8eefc; --muted:#9fb6e0;
+  --green:#12805c; --green2:#16a074; --red:#b3243b; --amber:#b8860b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,#061430 0%,#081a38 60%,#061430 100%);
+  color:var(--txt); min-height:100vh; -webkit-text-size-adjust:100%;
+}
+#app{max-width:1240px;margin:0 auto;padding:0 12px 30px}
+
+/* ============ HEADER ============ */
+.app-header{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+  padding:16px 0;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand>i{
+  font-size:26px;color:#fff;background:linear-gradient(145deg,var(--navy3),var(--accent2));
+  padding:12px;border-radius:14px;box-shadow:0 6px 18px rgba(47,111,237,.35)
+}
+.brand h1{margin:0;font-size:clamp(15px,2.4vw,21px);letter-spacing:1.4px;color:#fff;font-weight:700}
+.brand p{margin:3px 0 0;font-size:11.5px;color:var(--muted);letter-spacing:.4px}
+.header-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* ============ TABS ============ */
+.tabs{
+  display:flex;gap:6px;overflow-x:auto;padding:12px 0;border-bottom:1px solid var(--line);
+  position:sticky;top:0;background:#081a38;z-index:30;scrollbar-width:thin;
+}
+.tabs::-webkit-scrollbar{height:5px}
+.tabs::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+.tabs button{
+  flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+  background:transparent;border:1px solid var(--line);color:#cfe0ff;
+  padding:9px 14px;border-radius:9px;font-size:13px;font-weight:600;white-space:nowrap;
+  transition:.18s;
+}
+.tabs button i{color:#fff}
+.tabs button:hover{background:var(--navy2)}
+.tabs button.active{background:linear-gradient(145deg,var(--accent),var(--accent2));border-color:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(47,111,237,.4)}
+
+/* ============ PANELS ============ */
+.panel{display:none;padding-top:6px}
+.panel.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ============ CARDS ============ */
+.card{
+  background:linear-gradient(160deg,#0d2b5c,#0a2350);
+  border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0;
+  box-shadow:0 8px 26px rgba(0,0,0,.28);
+}
+.card h3{
+  margin:0 0 12px;font-size:14.5px;color:#fff;display:flex;align-items:center;gap:9px;
+  letter-spacing:.5px;text-transform:uppercase;font-weight:700
+}
+.card h3 i{color:#fff;background:var(--navy3);padding:7px;border-radius:8px;font-size:13px}
+
+/* ============ FORM ELEMENTS ============ */
+label{display:block;font-size:11.5px;color:var(--muted);margin-bottom:5px;letter-spacing:.4px;font-weight:600}
+input,select,textarea{
+  width:100%;background:#0a2450;border:1px solid var(--line);color:var(--txt);
+  border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;outline:none;
+  transition:.15s;
+}
+input::placeholder{color:#6f8cc0}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,237,.22)}
+input[type=color]{padding:3px;height:40px;cursor:pointer}
+input[type=file]{padding:7px;font-size:12px}
+select option{background:#0a2450;color:#fff}
+
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(165px,1fr))}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.row>input{flex:1 1 190px}
+.align-end{display:flex;align-items:flex-end}
+.days{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--txt);background:#0a2450;
+  border:1px solid var(--line);padding:7px 11px;border-radius:8px;cursor:pointer;margin:0}
+.chk input{width:auto;margin:0}
+
+/* ============ BUTTONS ============ */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:0;border-radius:9px;
+  padding:10px 15px;font-size:13px;font-weight:600;font-family:inherit;color:#fff;
+  background:linear-gradient(145deg,var(--accent),var(--accent2));transition:.18s;
+  box-shadow:0 4px 12px rgba(47,111,237,.3);white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.btn:active{transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:#cfe0ff;box-shadow:none}
+.btn.ghost:hover{background:var(--navy2)}
+.btn.green{background:linear-gradient(145deg,#16a074,#0d6b4c);box-shadow:0 4px 12px rgba(18,128,92,.3)}
+.btn.danger{background:linear-gradient(145deg,#c9304a,#8f1a2e);box-shadow:0 4px 12px rgba(179,36,59,.3)}
+.btn.small{padding:7px 11px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.icon-btn{
+  background:transparent;border:1px solid var(--line);color:#ff9aa9;border-radius:7px;
+  padding:6px 9px;cursor:pointer;font-size:12px;transition:.15s;
+}
+.icon-btn:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ============ TABLES (UI) ============ */
+.table-scroll{overflow-x:auto;margin-top:12px;border-radius:10px}
+.ui-table{width:100%;border-collapse:collapse;font-size:13px;min-width:420px}
+.ui-table th{
+  background:var(--navy3);color:#fff;text-align:left;padding:9px 10px;font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.6px;font-weight:700;white-space:nowrap;
+}
+.ui-table td{padding:8px 10px;border-bottom:1px solid #14356b;color:var(--txt);vertical-align:middle}
+.ui-table tr:nth-child(even) td{background:rgba(255,255,255,.025)}
+.ui-table input{padding:6px 8px;font-size:12.5px;border-radius:7px}
+.ui-table input.mini{min-width:70px}
+.muted{color:var(--muted);font-style:italic;font-size:12.5px}
+.swatch{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid #fff3}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;background:#0a2450;border:1px solid var(--line);
+  padding:6px 11px;border-radius:20px;font-size:12.5px;color:#dce8ff
+}
+.chip button{background:none;border:0;color:#ff9aa9;cursor:pointer;font-size:11px;padding:0}
+.chip button:hover{color:#fff}
+.logo-prev img{max-height:64px;max-width:150px;background:#fff;border-radius:8px;padding:4px;display:none}
+
+/* ============ PREVIEW PAPER ============ */
+.paper{
+  background:#fff;border-radius:10px;box-shadow:0 14px 40px rgba(0,0,0,.5);
+  margin:16px auto;max-width:210mm;overflow:hidden;
+}
+.preview-note{font-size:12px;color:var(--muted);text-align:center;margin:6px 0 0}
+.report-wrap{margin:18px 0}
+.report-bar{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--navy2);border:1px solid var(--line);border-radius:10px 10px 0 0;padding:9px 12px;
+  font-size:13px;font-weight:600;color:#fff
+}
+.report-bar i{color:#fff}
+
+/* ============ DOCUMENT (PRINTABLE) STYLES ============ */
+.doc{
+  background:#fff;color:#111;font-family:'Times New Roman',Times,serif;font-size:11pt;line-height:1.35;
+  padding:10mm 9mm;max-width:210mm;margin:0 auto;box-sizing:border-box;
+}
+.doc-head{text-align:center;border-bottom:2.5px solid #111;padding-bottom:6px;margin-bottom:8px}
+.doc-logo{height:74px;width:auto;max-width:150px;object-fit:contain;display:block;margin:0 auto 4px}
+.doc-head h2{margin:0;font-size:17pt;letter-spacing:1.2px;text-transform:uppercase;color:#0a1f44;font-weight:bold}
+.doc-head .motto{font-style:italic;font-size:10.5pt;color:#333;margin-top:2px}
+.doc-sub{font-size:10.5pt;margin-top:4px;font-weight:bold;letter-spacing:.3px}
+.doc-title{text-align:center;font-weight:bold;text-decoration:underline;font-size:12.5pt;margin:10px 0 8px;letter-spacing:.6px}
+.doc-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+.doc-table th,.doc-table td{border:1px solid #111;padding:3px 5px;font-size:10pt;word-wrap:break-word;vertical-align:top}
+.doc-table th{background:#dfe8f6;text-align:center;font-weight:bold}
+.doc-table td.c{text-align:center}
+.doc-table tr{page-break-inside:avoid}
+.tt td.cell{height:44px;font-size:9pt}
+.tt .subj{display:block;font-weight:bold;font-size:9.5pt}
+.tt .tch{display:flex;justify-content:space-between;align-items:flex-end;gap:4px;font-size:8pt;color:#222;margin-top:2px}
+.tt .tno{font-size:7pt;color:#000;font-weight:bold}
+.tt .brk td{background:#f0f0f0;text-align:center;font-style:italic;font-weight:bold;font-size:9.5pt}
+.tt .tm{text-align:center;font-size:8.5pt;white-space:nowrap;background:#f7f9ff}
+.info-table{width:100%;border-collapse:collapse;margin-bottom:10px}
+.info-table td{border:1px solid #111;padding:4px 7px;font-size:10pt}
+.info-table td.k{background:#eef3fb;font-weight:bold;width:22%}
+
+/* ---- dotted fill lines & signature blocks ---- */
+.fill{
+  display:inline-block;
+  border-bottom:1.5px dotted #111;
+  min-width:150px;
+  height:1em;
+  vertical-align:-2px;
+}
+.fill.short{min-width:95px}
+.fill.long{min-width:230px}
+.sign-row{display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:10pt}
+.sign-block{flex:1 1 190px;min-width:170px}
+.sign-space{height:26px;border-bottom:1.5px dotted #111;margin-top:6px;margin-bottom:3px}
+.sign-cap{font-size:9pt;color:#222;letter-spacing:.3px}
+.remarks-box{border:1px solid #111;padding:6px 8px;font-size:10pt;min-height:44px;margin-top:6px}
+.remarks-box b{font-size:9.5pt;letter-spacing:.3px}
+.doc.report{display:flex;flex-direction:column;min-height:277mm}
+.grow{flex:1 1 auto}
+.tick{font-weight:bold;font-size:12pt}
+
+/* ============ FOOTER ============ */
+.app-footer{
+  text-align:center;padding:20px 12px;color:#8aa4d4;font-size:12.5px;letter-spacing:.6px;
+  border-top:1px solid var(--line);margin-top:24px
+}
+.app-footer i{color:#fff;margin-right:6px}
+
+/* =========================================================
+   TOAST NOTIFICATIONS
+   ========================================================= */
+#toastHost{
+  position:fixed;top:20px;right:20px;z-index:10001;
+  display:flex;flex-direction:column;gap:10px;pointer-events:none;
+  max-width:min(360px, calc(100vw - 32px));
+}
+.toast{
+  pointer-events:auto;
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;border-radius:12px;
+  font-size:13.5px;font-weight:600;letter-spacing:.2px;
+  color:#fff;
+  background:linear-gradient(145deg,#16a074,#0d6b4c);
+  box-shadow:0 12px 34px rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.15);
+  transform:translateX(120%);
+  opacity:0;
+  transition:transform .35s cubic-bezier(.2,.9,.3,1.2), opacity .3s;
+}
+.toast.show{ transform:translateX(0); opacity:1; }
+.toast i{ font-size:17px; }
+.toast.warn{ background:linear-gradient(145deg,#b8860b,#8a6408); }
+.toast.error{ background:linear-gradient(145deg,#c9304a,#8f1a2e); }
+.toast.info{ background:linear-gradient(145deg,#2f6fed,#1e4fa3); }
+
+/* =========================================================
+   MODAL CONFIRM
+   ========================================================= */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(4,12,28,.75);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;z-index:10002;
+  padding:16px;animation:fade .2s ease;
+}
+.modal-box{
+  background:linear-gradient(160deg,#0d2b5c,#0a2350);
+  border:1px solid var(--line);border-radius:14px;
+  width:min(440px,100%);padding:20px;
+  box-shadow:0 22px 60px rgba(0,0,0,.6);
+  color:var(--txt);
+}
+.modal-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:15px;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:.4px;
+}
+.modal-title i{ color:#fff; background:var(--navy3); padding:7px; border-radius:8px; font-size:13px; }
+.modal-body{ font-size:13.5px; color:#cfe0ff; line-height:1.5; margin-bottom:18px; }
+.modal-actions{ display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap; }
+
+/* =========================================================
+   LOADER
+   ========================================================= */
+.loader-overlay{
+  position:fixed;inset:0;background:rgba(4,12,28,.78);
+  backdrop-filter:blur(5px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.loader-overlay.show{ opacity:1; pointer-events:auto; }
+.loader-box{ text-align:center; }
+.spinner{
+  width:68px;height:68px;margin:0 auto;
+  border-radius:50%;
+  border:5px solid rgba(255,255,255,.14);
+  border-top-color:#2f6fed;
+  border-right-color:#7fb0ff;
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg) } }
+.loader-text{
+  color:#fff;margin-top:14px;font-size:14px;letter-spacing:.6px;font-weight:600;
+}
+
+/* =========================================================
+   AI TRAINER (TOUR)
+   ========================================================= */
+.tour-panel{
+  position:fixed;left:50%;bottom:18px;
+  transform:translate(-50%, 150%);
+  width:min(540px, calc(100% - 24px));
+  background:linear-gradient(145deg,#1e4fa3,#2f6fed);
+  color:#fff;
+  border-radius:14px;
+  padding:16px 18px;
+  box-shadow:0 22px 55px rgba(0,0,0,.6);
+  z-index:9999;
+  transition:transform .38s cubic-bezier(.2,.9,.3,1.2);
+  border:1px solid rgba(255,255,255,.2);
+}
+.tour-panel.show{ transform:translate(-50%,0); }
+.tour-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:9px;
+}
+.tour-head i{
+  background:rgba(255,255,255,.18);padding:7px;border-radius:8px;font-size:13px;
+}
+.tour-title{ font-size:14px;font-weight:700;letter-spacing:.5px;flex:1; }
+.tour-count{
+  font-size:11.5px;background:rgba(255,255,255,.2);
+  padding:3px 9px;border-radius:20px;letter-spacing:.4px;font-weight:600;
+}
+.tour-body{
+  font-size:13.5px;line-height:1.55;color:#fff;margin-bottom:14px;
+  min-height:44px;
+}
+.tour-foot{ display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap; }
+.tour-btn{
+  display:inline-flex;align-items:center;gap:7px;
+  cursor:pointer;border:0;border-radius:9px;
+  padding:9px 15px;font-size:12.5px;font-weight:700;font-family:inherit;
+  letter-spacing:.4px;transition:.18s;
+}
+.tour-btn.next{ background:#fff; color:#1e4fa3; }
+.tour-btn.next:hover{ transform:translateY(-1px); box-shadow:0 8px 20px rgba(0,0,0,.35); }
+.tour-btn.skip{
+  background:transparent;color:#fff;border:1px solid rgba(255,255,255,.45);
+}
+.tour-btn.skip:hover{ background:rgba(255,255,255,.15); }
+
+.tour-restart{
+  position:fixed;right:18px;bottom:18px;
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(145deg,#2f6fed,#1e4fa3);
+  color:#fff;border:0;cursor:pointer;
+  font-size:21px;
+  box-shadow:0 12px 30px rgba(47,111,237,.55);
+  z-index:9998;
+  transition:transform .22s;
+}
+.tour-restart:hover{ transform:scale(1.08) rotate(-6deg); }
+.tour-restart.hide{ display:none; }
+
+.tour-highlight{
+  box-shadow:0 0 0 3px #ffe066, 0 0 0 9px rgba(255,224,102,.28) !important;
+  border-radius:12px !important;
+  position:relative;
+  z-index:5;
+  transition:box-shadow .3s;
+}
+
+/* ============ PRINT AREA ============ */
+#printArea{display:none}
+
+@media print{
+  @page{size:A4;margin:10mm}
+  html,body{background:#fff !important;margin:0;padding:0}
+  #app,.app-footer,.tour-panel,.tour-restart,.loader-overlay,#toastHost,.modal-overlay{display:none !important}
+  #printArea{display:block !important}
+  .doc{padding:0;margin:0;max-width:none;width:100%;box-shadow:none;border-radius:0}
+  .doc.report{min-height:277mm}
+  .page-break{page-break-after:always}
+  .page-break:last-child{page-break-after:auto}
+}
+
+/* ============ MOBILE ============ */
+@media (max-width:640px){
+  .brand p{display:none}
+  .card{padding:13px}
+  .btn{font-size:12.5px;padding:9px 12px}
+  .doc{font-size:10pt;padding:6mm 5mm}
+  .doc-head h2{font-size:14pt}
+  .doc-table th,.doc-table td{font-size:9pt;padding:2px 3px}
+  .paper{border-radius:8px}
+  .tour-panel{ padding:14px; }
+  .tour-body{ font-size:13px; }
+  #toastHost{ top:14px; right:14px; left:14px; max-width:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <header class="app-header">
+    <div class="brand">
+      <i class="fas fa-graduation-cap"></i>
+      <div>
+        <h1>SCHOOL ASSESSMENT TOOL</h1>
+        <p>TIMETABLES &bull; RECORDS OF WORK &bull; MARKLISTS &bull; REPORT CARDS</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn ghost" id="btn-save"><i class="fas fa-floppy-disk"></i> Save Data</button>
+      <button class="btn danger" id="btn-reset"><i class="fas fa-trash-can"></i> Reset All</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="setup" class="active"><i class="fas fa-sliders"></i> Setup</button>
+    <button data-tab="timetable"><i class="fas fa-table-cells"></i> Timetable</button>
+    <button data-tab="records"><i class="fas fa-clipboard-list"></i> Records of Work</button>
+    <button data-tab="marklist"><i class="fas fa-list-ol"></i> Marklist</button>
+    <button data-tab="reports"><i class="fas fa-file-lines"></i> Report Cards</button>
+  </nav>
+
+  <main>
+    <!-- ================= SETUP ================= -->
+    <section class="panel active" id="p-setup">
+      <div class="card">
+        <h3><i class="fas fa-school"></i> School Identity</h3>
+        <div class="grid">
+          <div><label>School Name</label><input id="s-name" placeholder="e.g. Riverside Primary School"></div>
+          <div><label>School Motto</label><input id="s-motto" placeholder="e.g. Knowledge Is Power"></div>
+          <div><label>Term</label><input id="s-term" placeholder="Term 1"></div>
+          <div><label>Year</label><input id="s-year" placeholder="2025"></div>
+          <div><label>School Logo</label><input type="file" id="s-logo" accept="image/*"></div>
+          <div><label>Logo Preview</label><div class="logo-prev"><img id="s-logo-prev" alt="Logo"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-chalkboard-user"></i> Teachers</h3>
+        <div class="grid">
+          <div><label>Teacher Name</label><input id="t-name" placeholder="e.g. Mr. John Otieno"></div>
+          <div><label>Teacher Number</label><input id="t-no" placeholder="e.g. 245781"></div>
+          <div class="align-end"><button class="btn" id="add-teacher"><i class="fas fa-plus"></i> Add Teacher</button></div>
+        </div>
+        <div class="table-scroll"><table class="ui-table" id="teacher-table"></table></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-book"></i> Learning Areas (Subjects)</h3>
+        <div class="row">
+          <input id="sub-name" placeholder="e.g. Mathematics">
+          <button class="btn" id="add-subject"><i class="fas fa-plus"></i> Add Learning Area</button>
+        </div>
+        <div class="chips" id="subject-chips"></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-layer-group"></i> Grades / Classes</h3>
+        <div class="row">
+          <input id="g-name" placeholder="e.g. Grade 5">
+          <button class="btn" id="add-grade"><i class="fas fa-plus"></i> Add Grade</button>
+        </div>
+        <div class="chips" id="grade-chips"></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-clock"></i> Timetable Configuration</h3>
+        <div class="grid">
+          <div><label>Day Start Time</label><input type="time" id="c-start" value="08:00"></div>
+          <div><label>Lesson Duration (minutes)</label><input type="number" id="c-dur" value="40" min="20" max="120"></div>
+          <div><label>Lessons Per Day</label><input type="number" id="c-periods" value="8" min="1" max="14"></div>
+        </div>
+        <label style="margin-top:12px">School Days</label>
+        <div class="days" id="c-days"></div>
+        <label style="margin-top:14px">Breaks, Games &amp; Lunch</label>
+        <div class="table-scroll"><table class="ui-table" id="break-table"></table></div>
+        <button class="btn ghost" id="add-break" style="margin-top:10px"><i class="fas fa-plus"></i> Add Break / Games / Lunch</button>
+      </div>
+    </section>
+
+    <!-- ================= TIMETABLE ================= -->
+    <section class="panel" id="p-timetable">
+      <div class="card">
+        <h3><i class="fas fa-table-cells"></i> Lesson Allocation</h3>
+        <div class="grid">
+          <div><label>Grade / Class</label><select id="tt-grade"></select></div>
+        </div>
+        <div class="grid" style="margin-top:12px;align-items:end">
+          <div><label>Learning Area</label><select id="e-subject"></select></div>
+          <div><label>Teacher</label><select id="e-teacher"></select></div>
+          <div><label>Lessons / Week</label><input type="number" id="e-perweek" value="4" min="1" max="20"></div>
+          <div><label>Text Colour</label><input type="color" id="e-colour" value="#003366"></div>
+          <div class="align-end"><button class="btn" id="add-entry"><i class="fas fa-plus"></i> Add Lesson</button></div>
+        </div>
+        <div class="table-scroll"><table class="ui-table" id="entry-table"></table></div>
+        <div class="btn-row">
+          <button class="btn green" id="build-tt"><i class="fas fa-wand-magic-sparkles"></i> Auto Build Timetable</button>
+          <button class="btn ghost" id="clear-tt"><i class="fas fa-eraser"></i> Clear Timetable</button>
+          <button class="btn" id="print-tt"><i class="fas fa-print"></i> Print / Save PDF</button>
+          <button class="btn" id="word-tt"><i class="fas fa-file-word"></i> Export Word</button>
+        </div>
+      </div>
+      <p class="preview-note"><i class="fas fa-eye"></i> Live A4 preview</p>
+      <div class="paper"><div id="tt-preview"></div></div>
+    </section>
+
+    <!-- ================= RECORDS OF WORK ================= -->
+    <section class="panel" id="p-records">
+      <div class="card">
+        <h3><i class="fas fa-clipboard-list"></i> Record of Work Details</h3>
+        <div class="grid">
+          <div><label>Grade / Class</label><select id="r-grade"></select></div>
+          <div><label>Learning Area</label><input id="r-area" placeholder="e.g. Mathematics"></div>
+          <div><label>Term</label><input id="r-term" placeholder="Term 1"></div>
+          <div><label>Year</label><input id="r-year" placeholder="2025"></div>
+          <div><label>Strand</label><input id="r-strand" placeholder="e.g. Numbers"></div>
+          <div><label>Sub-Strand</label><input id="r-substrand" placeholder="e.g. Whole Numbers"></div>
+          <div><label>Roll</label><input type="number" id="r-roll" placeholder="e.g. 45"></div>
+          <div><label>Date</label><input type="date" id="r-date"></div>
+          <div><label>Teacher's Name</label><input id="r-teacher" placeholder="e.g. Mr. John Otieno"></div>
+        </div>
+
+        <h3 style="margin-top:18px"><i class="fas fa-users"></i> Learners &amp; Assessment Groups</h3>
+        <div class="grid" style="align-items:end">
+          <div><label>Learner Name</label><input id="rl-name" placeholder="e.g. Mary Wanjiku"></div>
+          <div><label>Roll No</label><input type="number" id="rl-roll" placeholder="1"></div>
+          <div><label>Performance Level</label>
+            <select id="rl-level">
+              <option value="EE">EE - Exceeding Expectation</option>
+              <option value="ME">ME - Meeting Expectation</option>
+              <option value="AE">AE - Approaching Expectation</option>
+              <option value="BE">BE - Below Expectation</option>
+            </select>
+          </div>
+          <div><label>Remarks</label><input id="rl-remark" placeholder="Optional"></div>
+          <div class="align-end"><button class="btn" id="add-learner"><i class="fas fa-plus"></i> Add Learner</button></div>
+        </div>
+        <div class="table-scroll"><table class="ui-table" id="learner-table"></table></div>
+        <div class="btn-row">
+          <button class="btn" id="print-rec"><i class="fas fa-print"></i> Print / Save PDF</button>
+          <button class="btn" id="word-rec"><i class="fas fa-file-word"></i> Export Word</button>
+          <button class="btn ghost" id="clear-rec"><i class="fas fa-eraser"></i> Clear Learners</button>
+        </div>
+      </div>
+      <p class="preview-note"><i class="fas fa-eye"></i> Live A4 preview</p>
+      <div class="paper"><div id="rec-preview"></div></div>
+    </section>
+
+    <!-- ================= MARKLIST ================= -->
+    <section class="panel" id="p-marklist">
+      <div class="card">
+        <h3><i class="fas fa-book-open"></i> Marklist Subjects</h3>
+        <div class="row">
+          <input id="m-subject" placeholder="Subject name">
+          <button class="btn" id="add-msub"><i class="fas fa-plus"></i> Add Subject</button>
+          <button class="btn ghost" id="load-areas"><i class="fas fa-download"></i> Load Learning Areas</button>
+          <button class="btn ghost" id="clear-msubs"><i class="fas fa-eraser"></i> Clear Subjects</button>
+        </div>
+        <div class="chips" id="m-subject-chips"></div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-user-plus"></i> Learners &amp; Marks</h3>
+        <div class="grid" style="align-items:end">
+          <div><label>Learner Name</label><input id="m-name" placeholder="e.g. Mary Wanjiku"></div>
+          <div class="align-end"><button class="btn" id="add-mlearner"><i class="fas fa-plus"></i> Add Learner</button></div>
+          <div><label>Class Teacher</label><input id="m-cteacher" placeholder="e.g. Mrs. A. Kamau"></div>
+          <div><label>H.O.I Name</label><input id="m-hoi" placeholder="e.g. Mr. P. Mwangi"></div>
+        </div>
+        <div class="table-scroll"><div id="marklist-editor"></div></div>
+        <div class="btn-row">
+          <button class="btn" id="print-ml"><i class="fas fa-print"></i> Print / Save PDF</button>
+          <button class="btn" id="word-ml"><i class="fas fa-file-word"></i> Export Word</button>
+          <button class="btn ghost" id="clear-mlearners"><i class="fas fa-eraser"></i> Clear Learners</button>
+        </div>
+      </div>
+      <p class="preview-note"><i class="fas fa-eye"></i> Live A4 preview</p>
+      <div class="paper"><div id="ml-preview"></div></div>
+    </section>
+
+    <!-- ================= REPORT CARDS ================= -->
+    <section class="panel" id="p-reports">
+      <div class="card">
+        <h3><i class="fas fa-file-lines"></i> Report Card Settings</h3>
+        <div class="grid">
+          <div><label>Class Teacher</label><input id="rp-ct" placeholder="e.g. Mrs. A. Kamau"></div>
+          <div><label>H.O.I Name</label><input id="rp-hoi" placeholder="e.g. Mr. P. Mwangi"></div>
+          <div><label>Class Teacher's Remarks (blank = auto)</label><input id="rp-remark-ct" placeholder="Auto generated if blank"></div>
+          <div><label>H.O.I Remarks (blank = auto)</label><input id="rp-remark-hoi" placeholder="Auto generated if blank"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn green" id="gen-reports"><i class="fas fa-gears"></i> Generate Report Cards</button>
+          <button class="btn" id="print-reports"><i class="fas fa-print"></i> Print All / PDF</button>
+          <button class="btn" id="word-reports"><i class="fas fa-file-word"></i> Export Word</button>
+        </div>
+        <p class="muted" style="margin-top:10px"><i class="fas fa-circle-info"></i> Report cards are generated from the Marklist tab. Add subjects, learners and marks first.</p>
+      </div>
+      <div id="report-list"></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <i class="fas fa-copyright"></i> Cornelius and associates software &mdash; All rights reserved
+  </footer>
+</div>
+
+<!-- ================= TOAST HOST ================= -->
+<div id="toastHost"></div>
+
+<!-- ================= LOADER ================= -->
+<div id="loader" class="loader-overlay">
+  <div class="loader-box">
+    <div class="spinner"></div>
+    <div class="loader-text">Processing...</div>
+  </div>
+</div>
+
+<!-- ================= AI TRAINER ================= -->
+<div id="tourPanel" class="tour-panel">
+  <div class="tour-head">
+    <i class="fas fa-robot"></i>
+    <span class="tour-title">AI Trainer</span>
+    <span class="tour-count" id="tourCount"></span>
+  </div>
+  <div class="tour-body" id="tourBody"></div>
+  <div class="tour-foot">
+    <button class="tour-btn skip" id="tourSkip"><i class="fas fa-forward"></i> Skip Tour</button>
+    <button class="tour-btn next" id="tourNext">Next <i class="fas fa-arrow-right"></i></button>
+  </div>
+</div>
+<button id="tourRestart" class="tour-restart hide" title="Start AI Trainer">
+  <i class="fas fa-graduation-cap"></i>
+</button>
+
+<div id="printArea"></div>
+
+<script>
+/* =========================================================
+   SCHOOL ASSESSMENT TOOL  —  Core Application Script
+   ========================================================= */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g,
+  c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+const KEY = 'school_assessment_tool_v1';
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+/* =========================================================
+   NOTIFICATIONS / CONFIRM / LOADER
+   ========================================================= */
+function notify(msg, type = 'success'){
+  const host = $('#toastHost');
+  const icons = { success:'fa-circle-check', warn:'fa-triangle-exclamation',
+                  error:'fa-circle-xmark', info:'fa-circle-info' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type === 'success' ? '' : type);
+  t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${esc(msg)}</span>`;
+  host.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 350);
+  }, 3400);
+}
+
+function askConfirm(message, title = 'Please Confirm'){
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+      <div class="modal-box" role="dialog" aria-modal="true">
+        <div class="modal-title"><i class="fas fa-circle-question"></i><span>${esc(title)}</span></div>
+        <div class="modal-body">${esc(message)}</div>
+        <div class="modal-actions">
+          <button class="btn ghost" data-cancel>Cancel</button>
+          <button class="btn danger" data-ok>Confirm</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const close = v => { overlay.remove(); resolve(v); };
+    overlay.querySelector('[data-ok]').onclick = () => close(true);
+    overlay.querySelector('[data-cancel]').onclick = () => close(false);
+    overlay.addEventListener('click', e => { if(e.target === overlay) close(false); });
+  });
+}
+
+function showLoader(text = 'Processing...'){
+  const l = $('#loader');
+  $('.loader-text', l).textContent = text;
+  l.classList.add('show');
+}
+function hideLoader(){ $('#loader').classList.remove('show'); }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* =========================================================
+   STATE
+   ========================================================= */
+function defaults(){
+  return {
+    school:{ name:'', motto:'', logo:'', term:'Term 1', year:new Date().getFullYear() },
+    teachers:[], subjects:[], grades:[],
+    cfg:{
+      start:'08:00', dur:40, periods:8,
+      days:['Mon','Tue','Wed','Thu','Fri'],
+      breaks:[
+        { name:'Short Break', after:2, mins:20 },
+        { name:'Lunch',       after:5, mins:40 },
+        { name:'Games',       after:7, mins:40 }
+      ]
+    },
+    entries:[], timetables:{},
+    record:{ grade:'', area:'', term:'', year:'', strand:'', substrand:'',
+             roll:'', date:'', teacher:'', learners:[] },
+    marklist:{ subjects:[], learners:[], cteacher:'', hoi:'' },
+    report:{ cteacher:'', hoi:'', remarkCT:'', remarkHOI:'' }
+  };
+}
+let S = defaults();
+
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    const def = defaults();
+    S = Object.assign(def, d);
+    S.school   = Object.assign(def.school,   d.school   || {});
+    S.cfg      = Object.assign(def.cfg,      d.cfg      || {});
+    S.record   = Object.assign(def.record,   d.record   || {});
+    S.marklist = Object.assign(def.marklist, d.marklist || {});
+    S.report   = Object.assign(def.report,   d.report   || {});
+    S.cfg.breaks = (d.cfg && d.cfg.breaks) || def.cfg.breaks;
+  }catch(e){ S = defaults(); }
+}
+
+/* =========================================================
+   TIME + GRADING HELPERS
+   ========================================================= */
+function fmtTime(mins){
+  const h = Math.floor(mins/60) % 24, m = mins % 60;
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+function computeSlots(cfg){
+  const [h, m] = (cfg.start || '08:00').split(':').map(Number);
+  let t = (h*60) + (m||0);
+  const slots = [];
+  const brks = (cfg.breaks || []).slice().sort((a,b) => Number(a.after) - Number(b.after));
+  const periods = Math.max(1, Number(cfg.periods) || 8);
+  const dur = Math.max(10, Number(cfg.dur) || 40);
+  for(let p = 1; p <= periods; p++){
+    slots.push({ type:'lesson', period:p, start:fmtTime(t), end:fmtTime(t+dur) });
+    t += dur;
+    brks.filter(b => Number(b.after) === p).forEach(b => {
+      const mins = Math.max(5, Number(b.mins) || 20);
+      slots.push({ type:'break', name:b.name || 'Break', start:fmtTime(t), end:fmtTime(t+mins) });
+      t += mins;
+    });
+  }
+  return slots;
+}
+function gradeOf(m){
+  if(isNaN(m)) return '';
+  if(m >= 80) return 'EE';
+  if(m >= 65) return 'ME';
+  if(m >= 50) return 'AE';
+  return 'BE';
+}
+function gradeMeaning(g){
+  return ({ EE:'Exceeding Expectation', ME:'Meeting Expectation',
+            AE:'Approaching Expectation', BE:'Below Expectation' })[g] || '';
+}
+function subjectRemark(m){
+  if(isNaN(m)) return '';
+  if(m >= 80) return 'Excellent';
+  if(m >= 65) return 'Good';
+  if(m >= 50) return 'Fair';
+  return 'Needs improvement';
+}
+function autoRemarkCT(mean){
+  if(mean >= 80) return 'Excellent performance. Keep up the hard work.';
+  if(mean >= 65) return 'Good work. Aim higher next term.';
+  if(mean >= 50) return 'Fair performance. More effort is needed.';
+  return 'Below expectation. Needs close follow-up and support.';
+}
+function autoRemarkHOI(mean){
+  if(mean >= 80) return 'Outstanding results. The school is proud of this learner.';
+  if(mean >= 65) return 'Commendable performance. Sustain the effort.';
+  if(mean >= 50) return 'Average performance. Work harder.';
+  return 'Unsatisfactory. Remedial support recommended.';
+}
+
+/* =========================================================
+   DOCUMENT BUILDING BLOCKS
+   ========================================================= */
+function docHeader(subLine){
+  const s = S.school;
+  return `<div class="doc-head">
+    ${s.logo ? `<img src="${s.logo}" class="doc-logo" alt="School Logo">` : ''}
+    <h2>${esc(s.name || 'SCHOOL NAME')}</h2>
+    ${s.motto ? `<div class="motto">${esc(s.motto)}</div>` : ''}
+    ${subLine ? `<div class="doc-sub">${subLine}</div>` : ''}
+  </div>`;
+}
+function docTitle(t){ return `<div class="doc-title">${esc(t)}</div>`; }
+
+/* =========================================================
+   SETUP TAB RENDER
+   ========================================================= */
+function renderSchool(){
+  $('#s-name').value  = S.school.name;
+  $('#s-motto').value = S.school.motto;
+  $('#s-term').value  = S.school.term;
+  $('#s-year').value  = S.school.year;
+  const p = $('#s-logo-prev');
+  if(S.school.logo){ p.src = S.school.logo; p.style.display = 'block'; }
+  else { p.removeAttribute('src'); p.style.display = 'none'; }
+}
+function renderTeachers(){
+  const t = $('#teacher-table');
+  if(!S.teachers.length){ t.innerHTML = '<tr><td class="muted">No teachers added yet.</td></tr>'; return; }
+  t.innerHTML = '<thead><tr><th>#</th><th>Teacher Name</th><th>Teacher No.</th><th></th></tr></thead><tbody>' +
+    S.teachers.map((x,i) => `<tr>
+      <td>${i+1}</td>
+      <td>${esc(x.name)}</td>
+      <td><b>${esc(x.no)}</b></td>
+      <td><button class="icon-btn" data-del-teacher="${x.id}"><i class="fas fa-trash-can"></i></button></td>
+    </tr>`).join('') + '</tbody>';
+}
+function renderSubjects(){
+  const c = $('#subject-chips');
+  if(!S.subjects.length){ c.innerHTML = '<span class="muted">No learning areas added yet.</span>'; return; }
+  c.innerHTML = S.subjects.map(s =>
+    `<span class="chip"><i class="fas fa-book"></i> ${esc(s.name)}
+      <button data-del-subject="${s.id}"><i class="fas fa-xmark"></i></button></span>`).join('');
+}
+function renderGrades(){
+  const c = $('#grade-chips');
+  if(!S.grades.length){ c.innerHTML = '<span class="muted">No grades added yet.</span>'; return; }
+  c.innerHTML = S.grades.map(g =>
+    `<span class="chip"><i class="fas fa-layer-group"></i> ${esc(g.name)}
+      <button data-del-grade="${g.id}"><i class="fas fa-xmark"></i></button></span>`).join('');
+}
+function renderCfg(){
+  $('#c-start').value   = S.cfg.start;
+  $('#c-dur').value     = S.cfg.dur;
+  $('#c-periods').value = S.cfg.periods;
+  $('#c-days').innerHTML = DAYS.map(d =>
+    `<label class="chk"><input type="checkbox" value="${d}" ${S.cfg.days.includes(d)?'checked':''}> ${d}</label>`).join('');
+  renderBreaks();
+}
+function renderBreaks(){
+  const t = $('#break-table');
+  if(!S.cfg.breaks.length){ t.innerHTML = '<tr><td class="muted">No breaks configured.</td></tr>'; return; }
+  t.innerHTML = '<thead><tr><th>Name</th><th>After Lesson</th><th>Minutes</th><th></th></tr></thead><tbody>' +
+    S.cfg.breaks.map((b,i) => `<tr>
+      <td><input value="${esc(b.name)}" data-break-name="${i}"></td>
+      <td><input type="number" min="1" value="${esc(b.after)}" data-break-after="${i}"></td>
+      <td><input type="number" min="5" value="${esc(b.mins)}" data-break-mins="${i}"></td>
+      <td><button class="icon-btn" data-del-break="${i}"><i class="fas fa-trash-can"></i></button></td>
+    </tr>`).join('') + '</tbody>';
+}
+
+/* -------- Setup bindings -------- */
+function bindSetup(){
+  const bindVal = (sel, fn) => {
+    const el = $(sel);
+    el.addEventListener('input', () => { fn(el.value); save(); refreshDocs(); });
+  };
+  bindVal('#s-name',  v => S.school.name = v);
+  bindVal('#s-motto', v => S.school.motto = v);
+  bindVal('#s-term',  v => S.school.term = v);
+  bindVal('#s-year',  v => S.school.year = v);
+
+  $('#s-logo').addEventListener('change', e => {
+    const f = e.target.files[0]; if(!f) return;
+    readImage(f, data => {
+      S.school.logo = data; save(); renderSchool(); refreshDocs();
+      notify('School logo uploaded successfully.', 'success');
+    });
+  });
+
+  $('#add-teacher').onclick = () => {
+    const name = $('#t-name').value.trim(), no = $('#t-no').value.trim();
+    if(!name){ notify('Enter the teacher name.', 'warn'); return; }
+    S.teachers.push({ id:uid(), name, no: no || '—' });
+    $('#t-name').value = ''; $('#t-no').value = '';
+    save(); renderTeachers(); fillSelects(); renderEntries();
+    notify('Teacher added successfully.', 'success');
+  };
+
+  $('#add-subject').onclick = () => {
+    const name = $('#sub-name').value.trim(); if(!name) return;
+    if(S.subjects.some(x => x.name.toLowerCase() === name.toLowerCase())){
+      notify('That learning area already exists.', 'warn'); return;
+    }
+    S.subjects.push({ id:uid(), name });
+    $('#sub-name').value = '';
+    save(); renderSubjects(); fillSelects();
+    notify('Learning area added.', 'success');
+  };
+
+  $('#add-grade').onclick = () => {
+    const name = $('#g-name').value.trim(); if(!name) return;
+    if(S.grades.some(x => x.name.toLowerCase() === name.toLowerCase())){
+      notify('That grade already exists.', 'warn'); return;
+    }
+    S.grades.push({ id:uid(), name });
+    $('#g-name').value = '';
+    save(); renderGrades(); fillSelects(); renderEntries();
+    notify('Grade added successfully.', 'success');
+  };
+
+  $('#c-start').addEventListener('input',   e => { S.cfg.start = e.target.value; save(); });
+  $('#c-dur').addEventListener('input',     e => { S.cfg.dur = Number(e.target.value) || 40; save(); });
+  $('#c-periods').addEventListener('input', e => { S.cfg.periods = Number(e.target.value) || 8; save(); });
+  $('#c-days').addEventListener('change', () => {
+    S.cfg.days = $$('#c-days input:checked').map(i => i.value); save();
+  });
+
+  $('#break-table').addEventListener('input', e => {
+    const t = e.target;
+    if(t.dataset.breakName !== undefined)  S.cfg.breaks[t.dataset.breakName].name  = t.value;
+    if(t.dataset.breakAfter !== undefined) S.cfg.breaks[t.dataset.breakAfter].after = Number(t.value) || 1;
+    if(t.dataset.breakMins !== undefined)  S.cfg.breaks[t.dataset.breakMins].mins  = Number(t.value) || 10;
+    save();
+  });
+
+  $('#add-break').onclick = () => {
+    S.cfg.breaks.push({ name:'Break', after: S.cfg.breaks.length + 1, mins:20 });
+    save(); renderBreaks();
+  };
+}
+
+/* -------- image reader (auto resized) -------- */
+function readImage(file, cb){
+  const fr = new FileReader();
+  fr.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 340;
+      let w = img.width, h = img.height;
+      const sc = Math.min(1, max / Math.max(w, h));
+      w = Math.round(w * sc); h = Math.round(h * sc);
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(c.toDataURL('image/png'));
+    };
+    img.src = e.target.result;
+  };
+  fr.readAsDataURL(file);
+}
+
+/* =========================================================
+   SELECT FILLING
+   ========================================================= */
+function fillSelects(){
+  ['#tt-grade','#r-grade'].forEach(sel => {
+    const el = $(sel); const prev = el.value;
+    el.innerHTML = S.grades.length
+      ? S.grades.map(g => `<option value="${g.id}">${esc(g.name)}</option>`).join('')
+      : '<option value="">-- Add grades in Setup --</option>';
+    if(prev && S.grades.some(g => g.id === prev)) el.value = prev;
+  });
+  const es = $('#e-subject'); const prevS = es.value;
+  es.innerHTML = S.subjects.length
+    ? S.subjects.map(s => `<option value="${esc(s.name)}">${esc(s.name)}</option>`).join('')
+    : '<option value="">-- Add learning areas in Setup --</option>';
+  if(prevS) es.value = prevS;
+  const et = $('#e-teacher'); const prevT = et.value;
+  et.innerHTML = S.teachers.length
+    ? S.teachers.map(t => `<option value="${t.id}">${esc(t.name)} (${esc(t.no)})</option>`).join('')
+    : '<option value="">-- Add teachers in Setup --</option>';
+  if(prevT) et.value = prevT;
+}
+
+/* =========================================================
+   TIMETABLE TAB
+   ========================================================= */
+function renderEntries(){
+  const gid = $('#tt-grade').value;
+  const list = S.entries.filter(e => e.gradeId === gid);
+  const t = $('#entry-table');
+  if(!gid){ t.innerHTML = '<tr><td class="muted">Select a grade.</td></tr>'; return; }
+  if(!list.length){ t.innerHTML = '<tr><td class="muted">No lessons allocated for this grade yet.</td></tr>'; return; }
+  t.innerHTML = '<thead><tr><th>#</th><th>Learning Area</th><th>Teacher</th><th>No.</th><th>Lessons/Week</th><th>Colour</th><th></th></tr></thead><tbody>' +
+    list.map((e,i) => {
+      const tch = S.teachers.find(x => x.id === e.teacherId);
+      return `<tr>
+        <td>${i+1}</td>
+        <td>${esc(e.subject)}</td>
+        <td>${esc(tch ? tch.name : '—')}</td>
+        <td>${esc(tch ? tch.no : '—')}</td>
+        <td>${esc(e.perWeek)}</td>
+        <td><span class="swatch" style="background:${esc(e.colour)}"></span></td>
+        <td><button class="icon-btn" data-del-entry="${e.id}"><i class="fas fa-trash-can"></i></button></td>
+      </tr>`;
+    }).join('') + '</tbody>';
+}
+
+function bindTimetable(){
+  $('#tt-grade').addEventListener('change', () => { renderEntries(); renderTTPreview(); });
+
+  $('#add-entry').onclick = () => {
+    const gid = $('#tt-grade').value;
+    if(!gid){ notify('Add and select a grade first.', 'warn'); return; }
+    const subject = $('#e-subject').value;
+    const teacherId = $('#e-teacher').value;
+    if(!subject){ notify('Add a learning area first.', 'warn'); return; }
+    if(!teacherId){ notify('Add a teacher first.', 'warn'); return; }
+    S.entries.push({
+      id: uid(), gradeId: gid, subject, teacherId,
+      perWeek: Number($('#e-perweek').value) || 1,
+      colour: $('#e-colour').value
+    });
+    save(); renderEntries();
+    notify('Lesson allocation added.', 'success');
+  };
+
+  $('#build-tt').onclick = async () => {
+    const gid = $('#tt-grade').value;
+    if(!gid){ notify('Select a grade first.', 'warn'); return; }
+    if(!S.entries.filter(e => e.gradeId === gid).length){
+      notify('Add lesson allocations for this grade first.', 'warn'); return;
+    }
+    if(!S.cfg.days.length){ notify('Select at least one school day.', 'warn'); return; }
+    showLoader('Building timetable...');
+    await sleep(650);
+    autoBuild();
+    hideLoader();
+    notify('Timetable built successfully.', 'success');
+  };
+
+  $('#clear-tt').onclick = async () => {
+    const gid = $('#tt-grade').value; if(!gid) return;
+    const ok = await askConfirm('Clear the built timetable for this grade?', 'Clear Timetable');
+    if(!ok) return;
+    delete S.timetables[gid]; save(); renderTTPreview();
+    notify('Timetable cleared.', 'success');
+  };
+
+  $('#print-tt').onclick = () => printHTML(timetableDoc());
+  $('#word-tt').onclick  = () => exportWord(timetableDoc(), 'Timetable');
+}
+
+function autoBuild(){
+  const gid = $('#tt-grade').value;
+  if(!gid) return false;
+  const entries = S.entries.filter(e => e.gradeId === gid);
+  if(!entries.length) return false;
+
+  const allSlots = computeSlots(S.cfg);
+  const lessonIdx = allSlots.map((s,i) => s.type === 'lesson' ? i : -1).filter(i => i >= 0);
+  const days = S.cfg.days.slice();
+  if(!days.length) return false;
+
+  const pool = [];
+  entries.forEach(e => {
+    const t = S.teachers.find(x => x.id === e.teacherId);
+    for(let i = 0; i < Number(e.perWeek || 0); i++){
+      pool.push({
+        subject: e.subject,
+        teacher: t ? t.name : '—',
+        no: t ? t.no : '',
+        tid: e.teacherId,
+        colour: e.colour || '#003366'
+      });
+    }
+  });
+
+  const grid = {}, busy = {}, daySub = {};
+  const remaining = pool.slice();
+
+  days.forEach(d => {
+    lessonIdx.forEach(si => {
+      if(!remaining.length) return;
+      let idx = remaining.findIndex(r =>
+        !busy[r.tid + '|' + d + '|' + si] && !(daySub[d] && daySub[d][r.subject]));
+      if(idx < 0) idx = remaining.findIndex(r => !busy[r.tid + '|' + d + '|' + si]);
+      if(idx < 0) return;
+      const r = remaining.splice(idx, 1)[0];
+      grid[d + '|' + si] = r;
+      busy[r.tid + '|' + d + '|' + si] = 1;
+      (daySub[d] = daySub[d] || {})[r.subject] = 1;
+    });
+  });
+
+  S.timetables[gid] = { slots: allSlots, days, grid };
+  save(); renderTTPreview();
+  return true;
+}
+
+function timetableTable(gid){
+  const tt = S.timetables[gid];
+  if(!tt) return '<p style="text-align:center;color:#666;font-style:italic">No timetable built yet.</p>';
+  let h = '<table class="doc-table tt"><thead><tr><th style="width:14%">TIME</th>' +
+    tt.days.map(d => `<th>${esc(d)}</th>`).join('') + '</tr></thead><tbody>';
+  tt.slots.forEach((s, i) => {
+    if(s.type === 'break'){
+      h += `<tr class="brk"><td class="tm">${s.start}<br>${s.end}</td>
+            <td colspan="${tt.days.length}">${esc(s.name)}</td></tr>`;
+    } else {
+      h += `<tr><td class="tm">${s.start}<br>${s.end}</td>`;
+      tt.days.forEach(d => {
+        const e = tt.grid[d + '|' + i];
+        if(e){
+          h += `<td class="cell">
+                  <span class="subj" style="color:${esc(e.colour)}">${esc(e.subject)}</span>
+                  <span class="tch"><span>${esc(e.teacher)}</span><sub class="tno">${esc(e.no)}</sub></span>
+                </td>`;
+        } else {
+          h += '<td class="cell"></td>';
+        }
+      });
+      h += '</tr>';
+    }
+  });
+  h += '</tbody></table>';
+  return h;
+}
+
+function timetableDoc(){
+  const gid = $('#tt-grade').value;
+  const g = S.grades.find(x => x.id === gid);
+  const sub = `${g ? esc(g.name) : ''} &nbsp;|&nbsp; ${esc(S.school.term)} &nbsp; ${esc(S.school.year)}`;
+  return `<div class="doc">
+    ${docHeader(sub)}
+    ${docTitle('SCHOOL TIMETABLE')}
+    ${timetableTable(gid)}
+    <div class="sign-row">
+      <div class="sign-block">
+        <div>Prepared by: <b>${esc(S.school.name ? '' : '')}</b></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Teacher's Name &amp; Signature</div>
+      </div>
+      <div class="sign-block">
+        <div>Date: <span class="fill short"></span></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Date &amp; School Stamp</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderTTPreview(){
+  const gid = $('#tt-grade').value;
+  const tt = S.timetables[gid];
+  $('#tt-preview').innerHTML = tt
+    ? timetableDoc()
+    : `<div class="doc"><p style="text-align:center;color:#666;font-style:italic;padding:40px 0">
+         Allocate lessons then click <b>Auto Build Timetable</b> to see the A4 preview here.</p></div>`;
+}
+
+/* =========================================================
+   RECORDS OF WORK
+   ========================================================= */
+function renderRecordForm(){
+  const r = S.record;
+  $('#r-area').value      = r.area;
+  $('#r-term').value      = r.term || S.school.term;
+  $('#r-year').value      = r.year || S.school.year;
+  $('#r-strand').value    = r.strand;
+  $('#r-substrand').value = r.substrand;
+  $('#r-roll').value      = r.roll;
+  $('#r-date').value      = r.date;
+  $('#r-teacher').value   = r.teacher;
+  const gs = $('#r-grade');
+  if(r.grade && S.grades.some(g => g.id === r.grade)) gs.value = r.grade;
+}
+
+function renderLearnerTable(){
+  const t = $('#learner-table');
+  const list = S.record.learners;
+  if(!list.length){ t.innerHTML = '<tr><td class="muted">No learners added yet.</td></tr>'; return; }
+  t.innerHTML = '<thead><tr><th>#</th><th>Learner Name</th><th>Roll</th><th>EE</th><th>ME</th><th>AE</th><th>BE</th><th>Remarks</th><th></th></tr></thead><tbody>' +
+    list.map((l,i) => {
+      const tick = lv => l.level === lv ? '<span class="tick">&#10003;</span>' : '';
+      return `<tr>
+        <td>${i+1}</td>
+        <td>${esc(l.name)}</td>
+        <td>${esc(l.roll)}</td>
+        <td style="text-align:center">${tick('EE')}</td>
+        <td style="text-align:center">${tick('ME')}</td>
+        <td style="text-align:center">${tick('AE')}</td>
+        <td style="text-align:center">${tick('BE')}</td>
+        <td>${esc(l.remark || '')}</td>
+        <td><button class="icon-btn" data-del-learner="${l.id}"><i class="fas fa-trash-can"></i></button></td>
+      </tr>`;
+    }).join('') + '</tbody>';
+}
+
+function bindRecords(){
+  const bindVal = (sel, key) => {
+    $(sel).addEventListener('input', e => { S.record[key] = e.target.value; save(); renderRecordPreview(); });
+  };
+  bindVal('#r-area','area'); bindVal('#r-term','term'); bindVal('#r-year','year');
+  bindVal('#r-strand','strand'); bindVal('#r-substrand','substrand');
+  bindVal('#r-roll','roll'); bindVal('#r-date','date'); bindVal('#r-teacher','teacher');
+
+  $('#r-grade').addEventListener('change', e => {
+    S.record.grade = e.target.value; save(); renderRecordPreview();
+  });
+
+  $('#add-learner').onclick = () => {
+    const name = $('#rl-name').value.trim();
+    if(!name){ notify('Enter the learner name.', 'warn'); return; }
+    S.record.learners.push({
+      id: uid(), name,
+      roll: $('#rl-roll').value || (S.record.learners.length + 1),
+      level: $('#rl-level').value,
+      remark: $('#rl-remark').value.trim()
+    });
+    $('#rl-name').value = ''; $('#rl-roll').value = ''; $('#rl-remark').value = '';
+    save(); renderLearnerTable(); renderRecordPreview();
+    notify('Learner added to record of work.', 'success');
+  };
+
+  $('#clear-rec').onclick = async () => {
+    const ok = await askConfirm('Remove all learners from this record of work?', 'Clear Learners');
+    if(!ok) return;
+    S.record.learners = []; save(); renderLearnerTable(); renderRecordPreview();
+    notify('Learners cleared.', 'success');
+  };
+
+  $('#print-rec').onclick = () => printHTML(recordDoc());
+  $('#word-rec').onclick  = () => exportWord(recordDoc(), 'RecordOfWork');
+}
+
+function recordDoc(){
+  const r = S.record;
+  const g = S.grades.find(x => x.id === r.grade);
+  const rows = r.learners.map((l,i) => {
+    const tick = lv => l.level === lv ? '<span class="tick">&#10003;</span>' : '';
+    return `<tr>
+      <td class="c">${i+1}</td>
+      <td>${esc(l.name)}</td>
+      <td class="c">${esc(l.roll)}</td>
+      <td class="c">${tick('EE')}</td>
+      <td class="c">${tick('ME')}</td>
+      <td class="c">${tick('AE')}</td>
+      <td class="c">${tick('BE')}</td>
+      <td>${esc(l.remark || '')}</td>
+    </tr>`;
+  }).join('');
+
+  const info = `
+    <table class="info-table">
+      <tr><td class="k">Grade / Class</td><td>${esc(g ? g.name : '')}</td>
+          <td class="k">Learning Area</td><td>${esc(r.area)}</td></tr>
+      <tr><td class="k">Term</td><td>${esc(r.term)}</td>
+          <td class="k">Year</td><td>${esc(r.year)}</td></tr>
+      <tr><td class="k">Strand</td><td>${esc(r.strand)}</td>
+          <td class="k">Sub-Strand</td><td>${esc(r.substrand)}</td></tr>
+      <tr><td class="k">Roll</td><td>${esc(r.roll)}</td>
+          <td class="k">Date</td><td>${esc(r.date)}</td></tr>
+    </table>`;
+
+  const table = `
+    <table class="doc-table">
+      <thead><tr>
+        <th style="width:5%">#</th>
+        <th style="width:26%">Learner Name</th>
+        <th style="width:8%">Roll No</th>
+        <th>EE</th><th>ME</th><th>AE</th><th>BE</th>
+        <th style="width:20%">Teacher's Remarks</th>
+      </tr></thead>
+      <tbody>${rows || '<tr><td colspan="8" class="c" style="font-style:italic;color:#666">No learners recorded</td></tr>'}</tbody>
+    </table>`;
+
+  const legend = `<div style="font-size:9pt;margin:4px 0 10px">
+    <b>Key:</b> EE &ndash; Exceeding Expectation &nbsp;|&nbsp; ME &ndash; Meeting Expectation &nbsp;|&nbsp;
+    AE &ndash; Approaching Expectation &nbsp;|&nbsp; BE &ndash; Below Expectation</div>`;
+
+  return `<div class="doc">
+    ${docHeader(`${esc(S.school.term)} ${esc(S.school.year)}`)}
+    ${docTitle('RECORD OF WORK')}
+    ${info}
+    ${table}
+    ${legend}
+    <div class="sign-row" style="margin-top:22px">
+      <div class="sign-block">
+        <div>Date: <span class="fill short"></span></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Teacher's Name &amp; Signature</div>
+      </div>
+      <div class="sign-block">
+        <div>&nbsp;</div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Head Teacher / H.O.I Signature</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderRecordPreview(){ $('#rec-preview').innerHTML = recordDoc(); }
+
+/* =========================================================
+   MARKLIST
+   ========================================================= */
+function renderMarklistSubjects(){
+  const c = $('#m-subject-chips');
+  if(!S.marklist.subjects.length){ c.innerHTML = '<span class="muted">No subjects added yet.</span>'; return; }
+  c.innerHTML = S.marklist.subjects.map((s,i) =>
+    `<span class="chip"><i class="fas fa-book"></i> ${esc(s)}
+      <button data-del-msub="${i}"><i class="fas fa-xmark"></i></button></span>`).join('');
+  $('#m-cteacher').value = S.marklist.cteacher;
+  $('#m-hoi').value = S.marklist.hoi;
+}
+
+function renderMarklistEditor(){
+  const subs = S.marklist.subjects;
+  const box = $('#marklist-editor');
+  if(!subs.length){ box.innerHTML = '<p class="muted" style="margin-top:12px">Add subjects above to start entering marks.</p>'; return; }
+  const head = '<thead><tr><th>#</th><th style="min-width:150px">Learner Name</th>' +
+    subs.map(s => `<th style="min-width:78px">${esc(s)}</th>`).join('') +
+    '<th>Total</th><th>Mean</th><th>Grade</th><th>Pos</th><th></th></tr></thead>';
+
+  const body = S.marklist.learners.map((l,i) => {
+    const cells = subs.map(s =>
+      `<td><input class="mini" type="number" min="0" max="100" value="${esc(l.marks[s] ?? '')}"
+        data-mark="${l.id}" data-sub="${esc(s)}"></td>`).join('');
+    return `<tr>
+      <td>${i+1}</td>
+      <td><input class="mini" value="${esc(l.name)}" data-lname="${l.id}"></td>
+      ${cells}
+      <td class="calc" data-total="${l.id}">0</td>
+      <td class="calc" data-mean="${l.id}">0</td>
+      <td class="calc" data-grade="${l.id}">-</td>
+      <td class="calc" data-pos="${l.id}">-</td>
+      <td><button class="icon-btn" data-del-mlearner="${l.id}"><i class="fas fa-trash-can"></i></button></td>
+    </tr>`;
+  }).join('');
+
+  box.innerHTML = `<table class="ui-table" style="min-width:${420 + subs.length*90}px">${head}<tbody>${
+    body || `<tr><td colspan="${subs.length + 6}" class="muted">No learners added yet.</td></tr>`
+  }</tbody></table>`;
+  updateMarklistTotals();
+}
+
+function computeResults(){
+  const subs = S.marklist.subjects;
+  const rows = S.marklist.learners.map(l => {
+    let total = 0, count = 0;
+    subs.forEach(s => {
+      const v = parseFloat(l.marks[s]);
+      if(!isNaN(v)){ total += v; count++; }
+    });
+    const mean = count ? total / count : 0;
+    return { learner:l, total, count, mean, grade: gradeOf(mean) };
+  });
+  const sorted = [...rows].sort((a,b) => b.total - a.total);
+  sorted.forEach((r,i) => {
+    if(i > 0 && r.total === sorted[i-1].total) r.position = sorted[i-1].position;
+    else r.position = i + 1;
+  });
+  return rows;
+}
+
+function updateMarklistTotals(){
+  computeResults().forEach(r => {
+    const t = $(`[data-total="${r.learner.id}"]`);
+    const m = $(`[data-mean="${r.learner.id}"]`);
+    const g = $(`[data-grade="${r.learner.id}"]`);
+    const p = $(`[data-pos="${r.learner.id}"]`);
+    if(t) t.textContent = r.count ? r.total : '';
+    if(m) m.textContent = r.count ? r.mean.toFixed(1) : '';
+    if(g) g.textContent = r.count ? r.grade : '';
+    if(p) p.textContent = r.count ? r.position : '';
+  });
+  renderMarklistPreview();
+}
+
+function bindMarklist(){
+  $('#add-msub').onclick = () => {
+    const v = $('#m-subject').value.trim(); if(!v) return;
+    if(S.marklist.subjects.some(x => x.toLowerCase() === v.toLowerCase())){
+      notify('Subject already added.', 'warn'); return;
+    }
+    S.marklist.subjects.push(v);
+    $('#m-subject').value = '';
+    save(); renderMarklistSubjects(); renderMarklistEditor();
+    notify('Subject added to marklist.', 'success');
+  };
+  $('#load-areas').onclick = () => {
+    if(!S.subjects.length){ notify('No learning areas added in Setup.', 'warn'); return; }
+    S.subjects.forEach(s => {
+      if(!S.marklist.subjects.some(x => x.toLowerCase() === s.name.toLowerCase()))
+        S.marklist.subjects.push(s.name);
+    });
+    save(); renderMarklistSubjects(); renderMarklistEditor();
+    notify('Learning areas loaded.', 'success');
+  };
+  $('#clear-msubs').onclick = async () => {
+    const ok = await askConfirm('Clear all marklist subjects and their marks?', 'Clear Subjects');
+    if(!ok) return;
+    S.marklist.subjects = [];
+    S.marklist.learners.forEach(l => l.marks = {});
+    save(); renderMarklistSubjects(); renderMarklistEditor();
+    notify('Subjects cleared.', 'success');
+  };
+  $('#add-mlearner').onclick = () => {
+    const v = $('#m-name').value.trim();
+    if(!v){ notify('Enter the learner name.', 'warn'); return; }
+    S.marklist.learners.push({ id: uid(), name: v, marks: {} });
+    $('#m-name').value = '';
+    save(); renderMarklistEditor();
+    notify('Learner added to marklist.', 'success');
+  };
+  $('#clear-mlearners').onclick = async () => {
+    const ok = await askConfirm('Remove all learners from the marklist?', 'Clear Learners');
+    if(!ok) return;
+    S.marklist.learners = []; save(); renderMarklistEditor();
+    notify('Learners cleared.', 'success');
+  };
+  $('#m-cteacher').addEventListener('input', e => { S.marklist.cteacher = e.target.value; save(); renderMarklistPreview(); });
+  $('#m-hoi').addEventListener('input',      e => { S.marklist.hoi = e.target.value; save(); renderMarklistPreview(); });
+
+  $('#marklist-editor').addEventListener('input', e => {
+    const t = e.target;
+    if(t.dataset.mark){
+      const l = S.marklist.learners.find(x => x.id === t.dataset.mark);
+      if(l){ l.marks[t.dataset.sub] = t.value; save(); updateMarklistTotals(); }
+    }
+    if(t.dataset.lname){
+      const l = S.marklist.learners.find(x => x.id === t.dataset.lname);
+      if(l){ l.name = t.value; save(); }
+    }
+  });
+
+  $('#print-ml').onclick = () => printHTML(marklistDoc());
+  $('#word-ml').onclick  = () => exportWord(marklistDoc(), 'Marklist');
+}
+
+function marklistDoc(){
+  const subs = S.marklist.subjects;
+  const rows = computeResults().sort((a,b) => a.position - b.position);
+  const head = `<tr>
+    <th style="width:4%">#</th>
+    <th style="width:22%">Learner Name</th>
+    ${subs.map(s => `<th>${esc(s)}</th>`).join('')}
+    <th>Total</th><th>Mean</th><th>Grade</th><th>Pos</th>
+  </tr>`;
+  const body = rows.map((r,i) => `<tr>
+      <td class="c">${i+1}</td>
+      <td>${esc(r.learner.name)}</td>
+      ${subs.map(s => `<td class="c">${esc(r.learner.marks[s] ?? '')}</td>`).join('')}
+      <td class="c"><b>${r.count ? r.total : ''}</b></td>
+      <td class="c">${r.count ? r.mean.toFixed(1) : ''}</td>
+      <td class="c">${r.count ? r.grade : ''}</td>
+      <td class="c">${r.count ? r.position : ''}</td>
+    </tr>`).join('');
+
+  return `<div class="doc">
+    ${docHeader(`${esc(S.school.term)} ${esc(S.school.year)}`)}
+    ${docTitle('CLASS MARKLIST')}
+    <table class="doc-table">
+      <thead>${head}</thead>
+      <tbody>${body || `<tr><td colspan="${subs.length + 6}" class="c" style="font-style:italic;color:#666">No data</td></tr>`}</tbody>
+    </table>
+    <div style="font-size:9pt;margin:6px 0 4px">
+      <b>Grading:</b> EE = 80-100 &nbsp;|&nbsp; ME = 65-79 &nbsp;|&nbsp; AE = 50-64 &nbsp;|&nbsp; BE = Below 50
+    </div>
+    <div class="sign-row" style="margin-top:20px">
+      <div class="sign-block">
+        <div>Class Teacher: <b>${esc(S.marklist.cteacher)}</b></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Class Teacher's Signature</div>
+      </div>
+      <div class="sign-block">
+        <div>H.O.I: <b>${esc(S.marklist.hoi)}</b></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">H.O.I Signature</div>
+      </div>
+      <div class="sign-block">
+        <div>Date: <span class="fill short"></span></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Date &amp; School Stamp</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderMarklistPreview(){ $('#ml-preview').innerHTML = marklistDoc(); }
+
+/* =========================================================
+   REPORT CARDS
+   ========================================================= */
+function renderReportSettings(){
+  $('#rp-ct').value        = S.report.cteacher || S.marklist.cteacher || '';
+  $('#rp-hoi').value       = S.report.hoi || S.marklist.hoi || '';
+  $('#rp-remark-ct').value = S.report.remarkCT;
+  $('#rp-remark-hoi').value = S.report.remarkHOI;
+}
+
+function bindReports(){
+  $('#rp-ct').addEventListener('input',        e => { S.report.cteacher = e.target.value; save(); });
+  $('#rp-hoi').addEventListener('input',       e => { S.report.hoi = e.target.value; save(); });
+  $('#rp-remark-ct').addEventListener('input', e => { S.report.remarkCT = e.target.value; save(); });
+  $('#rp-remark-hoi').addEventListener('input',e => { S.report.remarkHOI = e.target.value; save(); });
+
+  $('#gen-reports').onclick = async () => {
+    const rows = computeResults();
+    if(!rows.length || !S.marklist.subjects.length){
+      notify('Add subjects and learners in the Marklist tab first.', 'warn'); return;
+    }
+    showLoader('Generating report cards...');
+    await sleep(700);
+    generateReports();
+    hideLoader();
+    notify('Report cards generated successfully.', 'success');
+  };
+
+  $('#print-reports').onclick = () => {
+    const html = allReportsHTML();
+    if(!html){ notify('Generate report cards first.', 'warn'); return; }
+    printHTML(html);
+  };
+  $('#word-reports').onclick = () => {
+    const html = allReportsHTML();
+    if(!html){ notify('Generate report cards first.', 'warn'); return; }
+    exportWord(html, 'ReportCards');
+  };
+}
+
+function reportCardHTML(row){
+  const l = row.learner;
+  const subs = S.marklist.subjects;
+  const ctName = S.report.cteacher || S.marklist.cteacher || '';
+  const hoiName = S.report.hoi || S.marklist.hoi || '';
+  const ctRemark = S.report.remarkCT || autoRemarkCT(row.mean);
+  const hoiRemark = S.report.remarkHOI || autoRemarkHOI(row.mean);
+
+  const subjectRows = subs.map((s,i) => {
+    const raw = l.marks[s];
+    const m = parseFloat(raw);
+    return `<tr>
+      <td class="c">${i+1}</td>
+      <td>${esc(s)}</td>
+      <td class="c">${isNaN(m) ? '' : esc(raw)}</td>
+      <td class="c">${isNaN(m) ? '' : gradeOf(m)}</td>
+      <td>${isNaN(m) ? '' : subjectRemark(m)}</td>
+    </tr>`;
+  }).join('');
+
+  const info = `
+    <table class="info-table">
+      <tr><td class="k">Learner's Name</td><td colspan="3"><b>${esc(l.name)}</b></td></tr>
+      <tr><td class="k">Grade / Class</td><td>${esc(gradeName())}</td>
+          <td class="k">Term</td><td>${esc(S.school.term)}</td></tr>
+      <tr><td class="k">Year</td><td>${esc(S.school.year)}</td>
+          <td class="k">Class Position</td><td><b>${row.position} out of ${S.marklist.learners.length}</b></td></tr>
+      <tr><td class="k">Total Marks</td><td>${row.total}</td>
+          <td class="k">Mean Score</td><td><b>${row.mean.toFixed(1)} (${row.grade})</b></td></tr>
+      <tr><td class="k">Class Teacher</td><td colspan="3">${esc(ctName)}</td></tr>
+    </table>`;
+
+  return `<div class="doc report">
+    ${docHeader(`${esc(S.school.term)} ${esc(S.school.year)}`)}
+    ${docTitle("LEARNER'S REPORT CARD")}
+    ${info}
+    <table class="doc-table">
+      <thead><tr>
+        <th style="width:5%">#</th>
+        <th style="width:30%">Learning Area</th>
+        <th style="width:12%">Marks (%)</th>
+        <th style="width:12%">Grade</th>
+        <th>Teacher's Remarks</th>
+      </tr></thead>
+      <tbody>${subjectRows || `<tr><td colspan="5" class="c" style="font-style:italic;color:#666">No subjects</td></tr>`}</tbody>
+    </table>
+
+    <div style="margin-top:8px">
+      <div class="remarks-box"><b>CLASS TEACHER'S REMARKS:</b><br>${esc(ctRemark)}</div>
+      <div class="remarks-box"><b>H.O.I'S REMARKS:</b><br>${esc(hoiRemark)}</div>
+    </div>
+
+    <div class="grow"></div>
+
+    <div class="sign-row" style="margin-top:18px">
+      <div class="sign-block">
+        <div>Class Teacher: <b>${esc(ctName)}</b></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Class Teacher's Signature</div>
+      </div>
+      <div class="sign-block">
+        <div>Date: <span class="fill short"></span></div>
+        <div class="sign-space"></div>
+        <div class="sign-cap">Date &amp; School Stamp</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function gradeName(){
+  const r = S.record.grade;
+  const g = S.grades.find(x => x.id === r) || S.grades[0];
+  return g ? g.name : '';
+}
+
+function generateReports(){
+  const rows = computeResults();
+  if(!rows.length || !S.marklist.subjects.length) return;
+  const sorted = [...rows].sort((a,b) => a.position - b.position);
+  $('#report-list').innerHTML = sorted.map(r => `
+    <div class="report-wrap">
+      <div class="report-bar">
+        <span><i class="fas fa-user-graduate"></i> ${esc(r.learner.name)} &nbsp;&mdash;&nbsp; Pos ${r.position}, Mean ${r.mean.toFixed(1)}</span>
+        <button class="btn small" data-print-report="${r.learner.id}"><i class="fas fa-print"></i> Print</button>
+      </div>
+      <div class="paper">${reportCardHTML(r)}</div>
+    </div>`).join('');
+}
+
+function allReportsHTML(){
+  const rows = computeResults();
+  if(!rows.length || !S.marklist.subjects.length) return '';
+  const sorted = [...rows].sort((a,b) => a.position - b.position);
+  return sorted.map((r,i) => {
+    const html = reportCardHTML(r);
+    return html.replace('class="doc report"',
+      `class="doc report ${i < sorted.length - 1 ? 'page-break' : ''}"`);
+  }).join('');
+}
+
+/* =========================================================
+   PRINT / EXPORT
+   ========================================================= */
+function printHTML(html){
+  const pa = $('#printArea');
+  pa.innerHTML = html;
+  setTimeout(() => { window.print(); }, 250);
+}
+
+function exportWord(html, filename){
+  const head =
+`<html xmlns:o="urn:schemas-microsoft-com:office:office"
+       xmlns:w="urn:schemas-microsoft-com:office:word"
+       xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${esc(filename)}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+<style>
+@page{ size:A4 portrait; margin:10mm; }
+body{ font-family:'Times New Roman',serif; font-size:11pt; color:#000; }
+table{ border-collapse:collapse; width:100%; }
+th,td{ border:1px solid #000; padding:3px 5px; font-size:10pt; vertical-align:top; }
+th{ background:#dfe8f6; text-align:center; font-weight:bold; }
+.doc-head{ text-align:center; border-bottom:2px solid #000; padding-bottom:5px; }
+.doc-head img{ height:70px; }
+.doc-head h2{ margin:3px 0; font-size:16pt; text-transform:uppercase; }
+.doc-head .motto{ font-style:italic; font-size:10pt; }
+.doc-title{ text-align:center; font-weight:bold; text-decoration:underline; margin:8px 0; font-size:12pt; }
+.info-table td.k{ background:#eef3fb; font-weight:bold; }
+.sign-block{ display:block; margin-top:18px; }
+.sign-space{ height:24px; border-bottom:1.5px dotted #000; }
+.sign-cap{ font-size:9pt; }
+.fill{ display:inline-block; border-bottom:1.5px dotted #000; min-width:140px; }
+.page-break{ page-break-after:always; }
+</style></head><body>`;
+
+  const blob = new Blob(['\ufeff' + head + html + '</body></html>'],
+    { type:'application/msword' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename + '.doc';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  notify('Word document exported.', 'success');
+}
+
+/* =========================================================
+   GLOBAL DELETE HANDLERS
+   ========================================================= */
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-del-teacher],[data-del-subject],[data-del-grade],' +
+    '[data-del-entry],[data-del-learner],[data-del-mlearner],[data-del-break],[data-del-msub],[data-print-report]');
+  if(!el) return;
+
+  if(el.dataset.delTeacher !== undefined){
+    S.teachers = S.teachers.filter(x => x.id !== el.dataset.delTeacher);
+    save(); renderTeachers(); fillSelects(); renderEntries();
+    notify('Teacher removed.', 'success');
+  }
+  if(el.dataset.delSubject !== undefined){
+    S.subjects = S.subjects.filter(x => x.id !== el.dataset.delSubject);
+    save(); renderSubjects(); fillSelects();
+    notify('Learning area removed.', 'success');
+  }
+  if(el.dataset.delGrade !== undefined){
+    const gid = el.dataset.delGrade;
+    S.grades = S.grades.filter(x => x.id !== gid);
+    S.entries = S.entries.filter(x => x.gradeId !== gid);
+    delete S.timetables[gid];
+    save(); renderGrades(); fillSelects(); renderEntries(); renderTTPreview();
+    notify('Grade removed.', 'success');
+  }
+  if(el.dataset.delEntry !== undefined){
+    S.entries = S.entries.filter(x => x.id !== el.dataset.delEntry);
+    save(); renderEntries();
+    notify('Lesson allocation removed.', 'success');
+  }
+  if(el.dataset.delLearner !== undefined){
+    S.record.learners = S.record.learners.filter(x => x.id !== el.dataset.delLearner);
+    save(); renderLearnerTable(); renderRecordPreview();
+  }
+  if(el.dataset.delMlearner !== undefined){
+    S.marklist.learners = S.marklist.learners.filter(x => x.id !== el.dataset.delMlearner);
+    save(); renderMarklistEditor();
+  }
+  if(el.dataset.delBreak !== undefined){
+    S.cfg.breaks.splice(Number(el.dataset.delBreak), 1);
+    save(); renderBreaks();
+  }
+  if(el.dataset.delMsub !== undefined){
+    const sub = S.marklist.subjects[Number(el.dataset.delMsub)];
+    S.marklist.subjects.splice(Number(el.dataset.delMsub), 1);
+    S.marklist.learners.forEach(l => { delete l.marks[sub]; });
+    save(); renderMarklistSubjects(); renderMarklistEditor();
+  }
+  if(el.dataset.printReport !== undefined){
+    const row = computeResults().find(r => r.learner.id === el.dataset.printReport);
+    if(row) printHTML(reportCardHTML(row));
+  }
+});
+
+/* =========================================================
+   TABS + INIT
+   ========================================================= */
+function switchTab(name){
+  const btn = $(`#tabs button[data-tab="${name}"]`);
+  if(!btn) return;
+  $$('#tabs button').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  $$('.panel').forEach(p => p.classList.remove('active'));
+  const p = $('#p-' + name);
+  if(p) p.classList.add('active');
+  if(name === 'marklist') renderMarklistPreview();
+  if(name === 'records')  renderRecordPreview();
+  if(name === 'timetable') renderTTPreview();
+}
+function initTabs(){
+  $$('#tabs button').forEach(b => {
+    b.onclick = () => {
+      switchTab(b.dataset.tab);
+      window.scrollTo({ top:0, behavior:'smooth' });
+    };
+  });
+}
+
+function refreshDocs(){
+  renderTTPreview();
+  renderRecordPreview();
+  renderMarklistPreview();
+}
+function renderAll(){
+  renderSchool();
+  renderTeachers();
+  renderSubjects();
+  renderGrades();
+  renderCfg();
+  fillSelects();
+  renderEntries();
+  renderRecordForm();
+  renderLearnerTable();
+  renderRecordPreview();
+  renderMarklistSubjects();
+  renderMarklistEditor();
+  renderReportSettings();
+  renderTTPreview();
+}
+
+/* =========================================================
+   GLOBAL BUTTONS
+   ========================================================= */
+$('#btn-save').onclick = () => {
+  save();
+  notify('All data saved.', 'success');
+};
+$('#btn-reset').onclick = async () => {
+  const ok = await askConfirm(
+    'This will erase ALL data (school info, teachers, timetable, records, marklists, reports). Continue?',
+    'Reset All Data'
+  );
+  if(!ok) return;
+  showLoader('Resetting data...');
+  await sleep(600);
+  localStorage.removeItem(KEY);
+  S = defaults();
+  renderAll();
+  $('#report-list').innerHTML = '';
+  hideLoader();
+  notify('All data has been reset.', 'success');
+};
+
+/* =========================================================
+   AI TRAINER (GUIDED TOUR)
+   ========================================================= */
+const TOUR_KEY = 'school_assessment_tour_seen_v2';
+const TOUR_STEPS = [
+  {
+    sel:'.brand',
+    title:'Welcome to School Assessment Tool',
+    body:'This short guided tour walks you through every feature: setting up your school, building timetables, recording work, entering marks and printing report cards. Use the Next button to continue, or Skip Tour to exit at any time.',
+    tab:null
+  },
+  {
+    sel:'#p-setup .card:nth-of-type(1)',
+    title:'Step 1: School Identity',
+    body:'Begin by entering the school name, motto, term and year. Upload the school logo. The logo and school name appear centered at the top of every printed document.',
+    tab:'setup'
+  },
+  {
+    sel:'#p-setup .card:nth-of-type(2)',
+    title:'Step 2: Teachers',
+    body:'Register each teacher with a name and a teacher number. Teacher numbers appear as small subscripts on the right side of the timetable cells, next to each teacher name.',
+    tab:'setup'
+  },
+  {
+    sel:'#p-setup .card:nth-of-type(3)',
+    title:'Step 3: Learning Areas',
+    body:'Add the subjects taught in your school. These appear in the timetable allocation, records of work, marklist and report cards.',
+    tab:'setup'
+  },
+  {
+    sel:'#p-setup .card:nth-of-type(5)',
+    title:'Step 4: Timetable Configuration',
+    body:'Set the day start time, lesson duration in minutes and number of lessons per day. Add short breaks, games and lunch. Each break is placed after the lesson number you choose.',
+    tab:'setup'
+  },
+  {
+    sel:'#p-timetable',
+    title:'Step 5: Timetable',
+    body:'Select a grade, choose a learning area and a teacher, set lessons per week and a text colour. Click Auto Build Timetable and the tool will spread lessons across the week avoiding teacher clashes.',
+    tab:'timetable'
+  },
+  {
+    sel:'#p-records',
+    title:'Step 6: Records of Work',
+    body:'Record the grade, learning area, strand, sub-strand and roll. Add each learner and mark them in the EE, ME, AE or BE assessment groups. Print or export to Word from here.',
+    tab:'records'
+  },
+  {
+    sel:'#p-marklist',
+    title:'Step 7: Marklist',
+    body:'Add subjects, then add learners and type their marks. Totals, means, grades and class positions are calculated automatically and displayed in the A4 preview.',
+    tab:'marklist'
+  },
+  {
+    sel:'#p-reports',
+    title:'Step 8: Report Cards',
+    body:'Generate individual learner report cards from the marklist. Each report card carries the school logo, motto, learner name, grade, term, year, teacher remarks and signature lines with a dotted space for the school stamp.',
+    tab:'reports'
+  },
+  {
+    sel:'.app-footer',
+    title:'Print and Export',
+    body:'Every document is sized to fill an A4 page. Use the Print button to save as PDF, or Export Word to download a .doc file. Your data is stored on this device. Enjoy using the School Assessment Tool.',
+    tab:null
+  }
+];
+
+let tourIdx = 0;
+let tourActive = false;
+
+function clearTourHighlight(){
+  $$('.tour-highlight').forEach(el => el.classList.remove('tour-highlight'));
+}
+function showTourPanel(){
+  $('#tourPanel').classList.add('show');
+  $('#tourRestart').classList.add('hide');
+}
+function hideTourPanel(){
+  $('#tourPanel').classList.remove('show');
+  $('#tourRestart').classList.remove('hide');
+}
+function startTour(){
+  tourActive = true;
+  tourIdx = 0;
+  showTourPanel();
+  renderTourStep();
+}
+function endTour(markSeen = true){
+  tourActive = false;
+  clearTourHighlight();
+  hideTourPanel();
+  if(markSeen){ try{ localStorage.setItem(TOUR_KEY, '1'); }catch(e){} }
+}
+function renderTourStep(){
+  if(!tourActive){ return; }
+  if(tourIdx >= TOUR_STEPS.length){ endTour(true); notify('Tour complete. Enjoy using the tool.', 'success'); return; }
+  const step = TOUR_STEPS[tourIdx];
+
+  if(step.tab){ switchTab(step.tab); }
+
+  clearTourHighlight();
+  const target = document.querySelector(step.sel);
+  if(target){
+    target.classList.add('tour-highlight');
+    setTimeout(() => {
+      try{ target.scrollIntoView({ behavior:'smooth', block:'center' }); }catch(e){}
+    }, 120);
+  }
+
+  $('#tourBody').textContent = step.body;
+  $('.tour-title', $('#tourPanel')).textContent = step.title;
+  $('#tourCount').textContent = `Step ${tourIdx + 1} of ${TOUR_STEPS.length}`;
+  const nextBtn = $('#tourNext');
+  nextBtn.innerHTML = (tourIdx === TOUR_STEPS.length - 1)
+    ? 'Finish <i class="fas fa-check"></i>'
+    : 'Next <i class="fas fa-arrow-right"></i>';
+}
+
+$('#tourNext').onclick = () => {
+  tourIdx++;
+  if(tourIdx >= TOUR_STEPS.length){
+    endTour(true);
+    notify('Tour complete. Enjoy using the tool.', 'success');
+  } else {
+    renderTourStep();
+  }
+};
+$('#tourSkip').onclick = () => {
+  endTour(true);
+  notify('Tour skipped. You can restart it anytime from the floating button.', 'info');
+};
+$('#tourRestart').onclick = () => startTour();
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+load();
+initTabs();
+bindSetup();
+bindTimetable();
+bindRecords();
+bindMarklist();
+bindReports();
+renderAll();
+
+/* Auto-start the AI trainer on first visit */
+try{
+  if(!localStorage.getItem(TOUR_KEY)){
+    setTimeout(() => startTour(), 1000);
+  }
+}catch(e){}
+</script>
+</body>
+</html>
